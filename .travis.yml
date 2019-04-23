@@ -1,0 +1,32 @@
+language: julia
+os:
+- linux
+julia:
+- 1.0
+notifications:
+  email: false
+git:
+  depth: 99999999
+cache:
+  timeout: 1000
+  directories:
+  - downloads
+env:
+  global:
+  - BINARYBUILDER_DOWNLOADS_CACHE=downloads
+  - BINARYBUILDER_AUTOMATIC_APPLE=true
+sudo: required
+before_script:
+- julia -e 'using Pkg; pkg"add BinaryProvider"; pkg"add BinaryBuilder#master"; Pkg.build()'
+script:
+- julia  --color=yes build_tarballs.jl
+deploy:
+  provider: releases
+  api_key:
+    secure: kB4F6lXkakZjCO+NvEOjyAJM7MP8H+EyweT786Ewwn8231HjuktWsQAIYHE0O8sbZDThf3DMOh4oUio6WOYyw3H/CngkfAPUU5RhR8MmRt3982hGgsfy8l+G8dVCPa0EsHQtryHAd8F2KN17ky12GpQcZzTRg92u/X7qhJRsuZxpnKGQwn96zK6K8+16ErB0Jb4QDo7ruiyOJmfKfopeTwA9zmk/yBMPnmx0OqqxtfNsBUjN7Z4KVe1vnQXwXFYlIFOy6JKcKFHQ0EaTyWe57QKzgre+TnpcRCyQmG0LtizGC1ucu1sU5QHUPgC4+lUdmWEfau0cqYsIZxC+eGZ8xNwoSG2UJJesrftdJscIVkIe5uJOgBpbJzguol1fz7J5RlWHlOKM0BAMwW0uAILIRCK7rOOc8Yshmw31VeGWVPswoG0SVkDy/Ki5VXRjjka+HwLodb5DXdfZaOuCu4wZWQM/1aQBehZPM9EXmaXuL4ibODsGyX3vWCY5qx4HxINbdzY7xO1iAX0dZ6+16Blh4Uo2Oq5D9wFkiML2omh3+doZ34tn08F7ybFAj5PSAQFqVopkchHa7NC28GUJM78gQiH9o7qku16ZuR1b8EYTLlcAFFCEEkEr3B4bG0d2qBD+q0rddwB2CmGB8lX8A0qKvO37fCx91BQRNU+r4+tqDj4=
+  file_glob: true
+  file: products/*
+  skip_cleanup: true
+  on:
+    repo: benlorenz/ninjaBuilder
+    tags: true
